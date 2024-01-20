@@ -5,10 +5,20 @@ document.addEventListener('DOMContentLoaded', function () {
     const deleteButton = document.querySelector('#deleteButton');
 
     allButtons.forEach(button => button.addEventListener('click', () => {
+        let lastChar = screen.textContent.slice(-1);
+
         if (screen.textContent === '0') {
             screen.textContent = '';
-        };
-        screen.textContent += button.innerHTML;
+        }
+
+        else if (lastChar === '.' && lastChar === '+' && lastChar === '-' && lastChar === 'x' && lastChar === '÷') {
+            screen.textContent = screen.textContent;
+        }
+
+        else {
+            screen.textContent += button.innerHTML;
+        }
+        
     }));
 
     clearButton.addEventListener('click', clearScreen);
@@ -16,9 +26,16 @@ document.addEventListener('DOMContentLoaded', function () {
         screen.textContent = '0';
     };
 
-    deleteButton.addEventListener('click', deleteOneElementInScreen);
-    function deleteOneElementInScreen () {
+    deleteButton.addEventListener('click', deleteLastCharInScreen);
+    function deleteLastCharInScreen () {
+        if (screen.textContent !== '0') {
         screen.textContent = screen.textContent.slice(0, -1);
+        };
+        if (screen.textContent === '') {
+            screen.textContent = '0'
+        }
     };
+
+
 });
 
