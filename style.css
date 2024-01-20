@@ -22,16 +22,33 @@ body {
 
 }
 
-#screen {
+#screenOne {
     display: flex;
-    border: 3px solid rgb(0, 0, 0);
+    border-top: none;
+    border-right: 3px solid black;
+    border-left: 3px solid black;
+    border-bottom: 3px solid black;
     font-size: 70px;
-    height: 150px;
+    height: 75px;
     width: 415px;
     background-color: aliceblue;
     justify-content: right;
     align-items: end;
+    overflow: hidden;
     
+}
+#screenTwo {
+    display: flex;
+    border-top: 3px solid black;
+    border-right: 3px solid black;
+    border-left: 3px solid black;
+    font-size: 70px;
+    height: 75px;
+    width: 415px;
+    background-color: aliceblue;
+    justify-content: right;
+    align-items: end;
+    overflow: hidden;
 }
 
 #clearButton,

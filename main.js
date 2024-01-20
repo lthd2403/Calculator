@@ -1,65 +1,121 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const screen = document.querySelector('#screen');
+    const screenOne = document.querySelector('#screenOne');
     const numberButtons = document.querySelectorAll('.basic');
     const clearButton = document.querySelector('#clearButton');
     const deleteButton = document.querySelector('#deleteButton');
     const operatorButtons = document.querySelectorAll('.advance');
     const resultButton = document.querySelector('#result');
+    const screenTwo = document.querySelector('#screenTwo');
+    const decimalButton = document.querySelector('#decimal');
 
     let num1;
     let num2;
     let operator;
     let result = 0;
+    let hasOperator = false;
 
     numberButtons.forEach(button => button.addEventListener('click', () => {
-        if (screen.textContent === '0') {
-            screen.textContent = '';        
+        if (screenOne.textContent === '0') {
+            screenOne.textContent = '';        
         } 
-        screen.textContent += button.innerHTML;
+        screenOne.textContent += button.innerHTML;
+        limitRange();
     }));
 
     operatorButtons.forEach(button => button.addEventListener('click', () => {
-
-        if (screen.textContent === '0') {
-            screen.textContent = '0';        
+        if (screenOne.textContent === '0') {
+            screenOne.textContent = '0';        
         } else {
-            screen.textContent += button.innerHTML;
+            screenOne.textContent += button.innerHTML;
         }
 
-        let lastChar = screen.textContent.slice(-2, -1);
+        let checkOperator = screenOne.textContent.slice(-2, -1);
 
-        if (lastChar === '.' || lastChar === '+' || lastChar === '-' || lastChar === 'x' || lastChar === '÷') {
-            screen.textContent = screen.textContent.slice(0, -1);
+        if (checkOperator === '.' || checkOperator === '+' || checkOperator === '-' || checkOperator === 'x' || checkOperator === '÷') {
+            screenOne.textContent = screenOne.textContent.slice(0, -1);
+        } 
+        if (hasOperator) {
+            screenOne.textContent = screenOne.textContent.slice(0, -1);
+            alert("Only use one operator!")
         }
+        if (screenOne.textContent.includes('+') || screenOne.textContent.includes('-') || screenOne.textContent.includes('x') || screenOne.textContent.includes('÷')) {
+            hasOperator = true;
+        }
+        limitRange();
     }));
+
+    decimalButton.addEventListener('click', () => {
+        if (screenOne.textContent === '0') {
+            screenOne.textContent = '0';        
+        }
+        let checkOperator = screenOne.textContent.slice(-2, -1);
+
+        if (checkOperator === '+' || checkOperator === '-' || checkOperator === 'x' || checkOperator === '÷') {
+            screenOne.textContent = screenOne.textContent;
+        }
+
+        const numbers = screenOne.textContent.match(/\d+(\.\d+)?/g);
+        let firstNum = numbers[0];
+        let secondNum = numbers[1];
+        let operatorForTwoNum = screenOne.textContent.match(/\+|-|x|÷/);
+        if (operatorForTwoNum !== null) {
+            operatorForTwoNum = operatorForTwoNum[0];
+        };
+
+        if (firstNum.includes(".")) {
+            screenOne.textContent = screenOne.textContent;
+        };
+        if (!firstNum.includes(".")) {
+            firstNum += ".";
+            screenOne.textContent = firstNum;
+        };
+        if (secondNum !== null) {
+            if (secondNum.includes(".")) {
+            screenOne.textContent = screenOne.textContent;
+            }
+            else if (!secondNum.includes(".")) {
+                secondNum += ".";
+                screenOne.textContent = firstNum + operatorForTwoNum + secondNum;
+            };
+        };
+        limitRange();
+    });
 
     clearButton.addEventListener('click', clearScreen);
     function clearScreen() {
-        screen.textContent = '0';
+        screenOne.textContent = '0';
+        screenTwo.textContent = '';
     };
 
     deleteButton.addEventListener('click', deleteLastCharInScreen);
     function deleteLastCharInScreen () {
-        if (screen.textContent !== '0') {
-            screen.textContent = screen.textContent.slice(0, -1);
+        if (screenOne.textContent !== '0') {
+            screenOne.textContent = screenOne.textContent.slice(0, -1);
         };
-        if (screen.textContent === '') {
-            screen.textContent = '0'
+        if (screenOne.textContent === '') {
+            screenOne.textContent = '0'
         }
     };
 
     resultButton.addEventListener('click', () => {
         getCalculateElements();
-        calculateResult(num1, num2)
+        if (!num2) {
+            alert("Please type the second number!")
+            screenOne.textContent = screenOne.textContent;
+        } else {
+            screenTwo.textContent = screenOne.textContent;
+            calculateResult(num1, num2);
+            hasOperator = false;
+        }
+        
     })
 
     function getCalculateElements() {    
-        const match = screen.textContent.match(/\d+(\.\d+)/g);
+        const match = screenOne.textContent.match(/\d+(\.\d+)?/g);
         num1 = parseFloat(match[0]);
         num2 = parseFloat(match[1]);
-        operator = screen.textContent.match(/\+|-|x|÷/)[0];
+        operator = screenOne.textContent.match(/\+|-|x|÷/)[0];
     };
-
 
     function calculateResult() {
         switch (operator) {
@@ -73,30 +129,40 @@ document.addEventListener('DOMContentLoaded', function () {
                 result = multiply(num1, num2);
                 break;
             case '÷':
-                if (b === 0) return null
-                else return divide(num1, num2);
+                if (num2 === 0) {
+                    alert("You cannot divide by 0!");
+                    screenTwo.textContent = "";
+                  } else {
+                    result = divide(num1, num2);
+                  }
+                break;
             default:
                 return null;
         };
-        screen.textContent = result;
+        screenOne.textContent = result;
     };
     
+    function limitRange() {
+        if (screenOne.textContent.length > 11) {
+            screenOne.textContent = screenOne.textContent.slice(0, 10);
+            alert('Too long!');
+        }
+    };
 
     function add(num1, num2) {
-        return num1 + num2;
+        return  num1 + num2;
     };
 
     function subtract(num1, num2) {
-        return num1 - num2;
+        return  num1 - num2;
     };
     
     function divide(num1, num2) {
-        return num1 / num2;
+        return +(num1 / num2).toFixed(2);
     };
 
     function  multiply(num1, num2) {
-        return num1 * num2;
+        return  num1 * num2;
     };
-
 });
 
