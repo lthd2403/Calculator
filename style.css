@@ -34,8 +34,8 @@ body {
     
 }
 
-.clearButton,
-.deleteButton {
+#clearButton,
+#deleteButton {
     display: flex;
     height: 70px;
     width: 160px;
