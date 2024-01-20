@@ -14,7 +14,7 @@ body {
     flex-direction: column;
     background-color: rgba(0, 0, 0, 0.571);
     height: 500px;
-    width: 420px;
+    width: 417px;
     border: 3px solid black;
     padding: 25px;
     gap: 20px;
@@ -48,6 +48,16 @@ button {
     justify-content: center;
     align-items: center;
     border-radius: 20%;
+    background-color: white;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: rgba(189, 220, 216, 0.9); /* Darken the background color by 10% on hover */
+  }
+
+button:active {
+    background-color: rgba(189, 220, 216, 0.5);
 }
 
 .firstContainer {
