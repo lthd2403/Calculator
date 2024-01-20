@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function () {
             screenOne.textContent = screenOne.textContent.slice(0, -1);
         } 
         if (hasOperator) {
-            screenOne.textContent = screenOne.textContent.slice(0, -1);
+            screenOne.textContent = screenOne.textContent;
             alert("Only use one operator!")
         }
         if (screenOne.textContent.includes('+') || screenOne.textContent.includes('-') || screenOne.textContent.includes('x') || screenOne.textContent.includes('÷')) {
@@ -99,12 +99,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
     resultButton.addEventListener('click', () => {
         getCalculateElements();
-        if (!num2) {
+        if (num2 === null) {
             alert("Please type the second number!")
             screenOne.textContent = screenOne.textContent;
-        } else {
+        } 
+        if (num2 !== null) {
             screenTwo.textContent = screenOne.textContent;
             calculateResult(num1, num2);
+            hasOperator = false;
+        }
+        if (operator === null) {
+            screenOne.textContent = screenOne.textContent;
             hasOperator = false;
         }
         
@@ -115,6 +120,12 @@ document.addEventListener('DOMContentLoaded', function () {
         num1 = parseFloat(match[0]);
         num2 = parseFloat(match[1]);
         operator = screenOne.textContent.match(/\+|-|x|÷/)[0];
+        if(operator === null) {
+            alert('Please type operator and second number!');
+        }
+        if(num2 === null) {
+            alert('Please type second number!');
+        }
     };
 
     function calculateResult() {
