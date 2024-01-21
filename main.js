@@ -14,37 +14,48 @@ document.addEventListener('DOMContentLoaded', function () {
     let result = 0;
     let hasOperator = false;
 
-    numberButtons.forEach(button => button.addEventListener('click', () => {
+    numberButtons.forEach(button => button.addEventListener('click', () => addNumber(button.textContent)));
+    operatorButtons.forEach(button => button.addEventListener('click', () =>addOperator(button.textContent)));
+    decimalButton.addEventListener('click', addDecimal);
+    resultButton.addEventListener('click',  resultConditions);
+    clearButton.addEventListener('click', clearScreen);
+    deleteButton.addEventListener('click', deleteLastCharInScreen);
+
+    window.addEventListener('keydown', handleKeyboardInput);
+
+    function addNumber(number) {
         if (screenOne.textContent === '0') {
             screenOne.textContent = '';        
         } 
-        screenOne.textContent += button.innerHTML;
+        screenOne.textContent += number;
         limitRange();
-    }));
+    };
 
-    operatorButtons.forEach(button => button.addEventListener('click', () => {
+    function addOperator(operator) {
         if (screenOne.textContent === '0') {
             screenOne.textContent = '0';        
         } else {
-            screenOne.textContent += button.innerHTML;
+            if (screenOne.textContent.includes('+') || screenOne.textContent.includes('-') || screenOne.textContent.includes('x') || screenOne.textContent.includes('÷')) {
+                hasOperator = true;
+            } else {
+                screenOne.textContent += operator;
+            }
         }
 
-        let checkOperator = screenOne.textContent.slice(-2, -1);
+        let checkOperator = screenOne.textContent.slice(-1);
 
         if (checkOperator === '.' || checkOperator === '+' || checkOperator === '-' || checkOperator === 'x' || checkOperator === '÷') {
-            screenOne.textContent = screenOne.textContent.slice(0, -1);
+            screenOne.textContent = screenOne.textContent;
         } 
         if (hasOperator) {
             screenOne.textContent = screenOne.textContent;
             alert("Only use one operator!")
         }
-        if (screenOne.textContent.includes('+') || screenOne.textContent.includes('-') || screenOne.textContent.includes('x') || screenOne.textContent.includes('÷')) {
-            hasOperator = true;
-        }
+        
         limitRange();
-    }));
+    };
 
-    decimalButton.addEventListener('click', () => {
+    function addDecimal() {
         if (screenOne.textContent === '0') {
             screenOne.textContent = '0';        
         }
@@ -69,26 +80,24 @@ document.addEventListener('DOMContentLoaded', function () {
             firstNum += ".";
             screenOne.textContent = firstNum;
         };
-        if (secondNum !== null) {
-            if (secondNum.includes(".")) {
-            screenOne.textContent = screenOne.textContent;
-            }
-            else if (!secondNum.includes(".")) {
-                secondNum += ".";
-                screenOne.textContent = firstNum + operatorForTwoNum + secondNum;
-            };
+        
+        if (secondNum.includes(".")) {
+        screenOne.textContent = screenOne.textContent;
+        }
+        else if (!secondNum.includes(".")) {
+            secondNum += ".";
+            screenOne.textContent = firstNum + operatorForTwoNum + secondNum;
         };
+        
         limitRange();
-    });
+    };
 
-    clearButton.addEventListener('click', clearScreen);
     function clearScreen() {
         screenOne.textContent = '0';
         screenTwo.textContent = '';
     };
 
-    deleteButton.addEventListener('click', deleteLastCharInScreen);
-    function deleteLastCharInScreen () {
+    function deleteLastCharInScreen() {
         if (screenOne.textContent !== '0') {
             screenOne.textContent = screenOne.textContent.slice(0, -1);
         };
@@ -97,34 +106,16 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
-    resultButton.addEventListener('click', () => {
+    function resultConditions() {
         getCalculateElements();
-        if (num2 === null) {
+        if (isNaN(num2)) {
             alert("Please type the second number!")
             screenOne.textContent = screenOne.textContent;
         } 
-        if (num2 !== null) {
+        if (!isNaN(num2)) {
             screenTwo.textContent = screenOne.textContent;
             calculateResult(num1, num2);
             hasOperator = false;
-        }
-        if (operator === null) {
-            screenOne.textContent = screenOne.textContent;
-            hasOperator = false;
-        }
-        
-    })
-
-    function getCalculateElements() {    
-        const match = screenOne.textContent.match(/\d+(\.\d+)?/g);
-        num1 = parseFloat(match[0]);
-        num2 = parseFloat(match[1]);
-        operator = screenOne.textContent.match(/\+|-|x|÷/)[0];
-        if(operator === null) {
-            alert('Please type operator and second number!');
-        }
-        if(num2 === null) {
-            alert('Please type second number!');
         }
     };
 
@@ -152,6 +143,16 @@ document.addEventListener('DOMContentLoaded', function () {
         };
         screenOne.textContent = result;
     };
+
+    function getCalculateElements() {    
+        const match = screenOne.textContent.match(/\d+(\.\d+)?/g);
+        num1 = parseFloat(match[0]);
+        num2 = parseFloat(match[1]);
+        operator = screenOne.textContent.match(/\+|-|x|÷/);
+        if (operator !== null) {
+            operator = operator[0];
+        };
+    };
     
     function limitRange() {
         if (screenOne.textContent.length > 11) {
@@ -161,11 +162,11 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     function add(num1, num2) {
-        return  num1 + num2;
+        return +(num1 + num2).toFixed(2);
     };
 
     function subtract(num1, num2) {
-        return  num1 - num2;
+        return +(num1 - num2).toFixed(2);
     };
     
     function divide(num1, num2) {
@@ -173,7 +174,29 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     function  multiply(num1, num2) {
-        return  num1 * num2;
+        return +(num1 * num2).toFixed(2);
     };
+    
+    function handleKeyboardInput(e) {
+        if(e.key >= 0 && e.key <= 9) {
+            addNumber(e.key); 
+        } else if (e.key === '.') {
+            addDecimal();
+        } else if (e.key === '=' || e.key === 'Enter') {
+            e.preventDefault();
+            resultConditions();
+        } else if (e.key === '+' || e.key === '-') {
+            addOperator(e.key);
+        } else if (e.key === '*' || e.key === 'x') {
+            addOperator('x');
+        } else if (e.key === '/' || e.key === '÷') {
+            addOperator('÷');
+        } else if (e.key === 'Backspace') {
+            deleteLastCharInScreen();
+        }else if (e.key === 'Escape') {
+            clearScreen();
+        }
+    };
+
 });
 

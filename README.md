@@ -8,5 +8,8 @@ Feature ideas to implement:
 - Allow multiple numbers.
 - Save the previous result.
 
+!!Notice!!
+- Use ESC button to clear the screen.
+
 [Live site](https://lthd2403.github.io/Calculator/)
 ![Alt text](image.png)
